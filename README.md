@@ -1,14 +1,16 @@
-# Pong Ranker
+# Thank you
 
-Uses the [Elo rating system](http://en.wikipedia.org/wiki/Elo_rating_system) to maintain a ranking of competitors. In my case, used to rank table tennis players at my workplace.
+This project is a fork from msharp/pong-rank, so thanks to msharp!
+
+# Score Visualizer
+
+Simple app to visualize scores, scores are stored in a datastore on GCP, in this case also JSON files are attached to the scores, to visualize the results on which the score is based. These are created offline in another app and pushed to GCP, as it involves some IP. 
 
 ## Users
 
-This is a GAE app. The user system is piggy backed off the Google authentication API provided. To register, a competitor needs a google account.
+This is a GAE app. The user system is piggy backed off the Google authentication API provided. To register, a competitor needs a google account. 
 
 ## Todo
 
-  - _undo_ a result by winding back all adjustments and replaying the subsequent results to readjust ranking
-  - feature which estimates the probable ranking changes if a player defeats another player 
-  - docking of points if no matches played in set time period (+ points awarded for playing high number of matches ?? top 20% of playing frequency)
+  - everything haha
 
