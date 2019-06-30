@@ -1,5 +1,5 @@
-application: pong-rankings
-version: 3
+# application: visualize-scores-pipescanner
+# version: 3
 runtime: python27
 api_version: 1
 threadsafe: yes
@@ -12,11 +12,14 @@ handlers:
 - url: /css
   static_dir: static/css
 
+- url: /js
+  static_dir: static/js
+
 - url: .*
   script: main.app
 
 libraries:
 - name: webapp2
-  version: "2.5.1"
+  version: latest
 - name: jinja2
   version: latest

@@ -12,5 +12,7 @@ This is a GAE app. The user system is piggy backed off the Google authentication
 
 ## Todo
 
-  - everything haha
+  - Styling
+  - And more mobile friendly
+  
 

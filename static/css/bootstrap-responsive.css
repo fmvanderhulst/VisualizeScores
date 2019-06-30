@@ -197,7 +197,14 @@
     width: auto;
   }
 }
-
+.column1 {
+  float: left;
+  width: 20%;
+}
+.column2 {
+  float: left;
+  width: 60%;
+}
 @media (min-width: 768px) and (max-width: 979px) {
   .row {
     margin-left: -20px;

@@ -2,7 +2,7 @@
 {% block body %}
 
     <div class="page-header">
-      <h1>Pong Rankings</h1>
+      <h1>PipeScanner Grand Tournament</h1>
     </div>
 
       <table class="table ladder">
@@ -10,8 +10,11 @@
           <tr>
             <th>Rank</th>
             <th>Name</th>
-            <th>Rating</th>
-            <th>Results</th>
+            <th>TotalScore</th>
+            <th>Quality</th>
+            <th>Coverage</th>
+            <th>Speed</th>
+            <th>Go To Results</th>
           </tr>
         </thead>
         <tbody>
@@ -19,8 +22,11 @@
             <tr>
               <td>{{ loop.index }}</td>
               <td>{{ ranking.nickname }}</td>
-              <td>{{ ranking.rating }}</td>
-              <td><a href="/results?userid={{ ranking.userid }}" class="btn">results</a></td>
+              <td>{{ ranking.totalscore }}</td>
+              <td>{{ ranking.quality }}</td>
+              <td>{{ ranking.coverage }}</td>
+              <td>{{ ranking.speed }}</td>
+              <td><a href="/result?userid={{ ranking.userid }}" class="btn">results</a></td>
             </tr>
           {% endfor %}
         </tbody>

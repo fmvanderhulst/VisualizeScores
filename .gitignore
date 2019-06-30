@@ -1,2 +1,9 @@
 
 *.pyc
+visualize-scores-pipescanner-45af08347921.json
+visualize-scores-pipescanner-79e04544c566.json
+/justgage-1.2.2
+static/js/gauge.js
+app/templates/gauge.html
+cloudstoragetest.py
+static/css/gauge.css

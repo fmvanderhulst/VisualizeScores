@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Pong Rankings</title>
+  <title>PipeScanner Grand Competion</title>
+  <!-- <link rel="stylesheet" type="text/css" href="/css/gauge.css" /> -->
   <link rel="stylesheet" type="text/css" href="/css/bootstrap.css" />
   <link rel="stylesheet" type="text/css" href="/css/bootstrap-responsive.css" />
   <link rel="stylesheet" type="text/css" href="/css/app.css" />
+  <link rel="stylesheet" href="/css/gauge.css">  
+  <script src="/js/raphael-2.1.4.min.js"></script>
+  <script src="/js/justgage.js"></script>
+  <script src="/js/Chart.min.js"></script>
+  <script src="/js/Chart.js"></script>
+  
 </head>
 <body>
 <div class="navbar navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container">
-      <h1 class="brand">Pong Rank</h1>
+      <h1 class="brand">PipeScanner Grand Cup</h1>
       <ul class="nav">
-        <li><a href="/">Ladder</a></li>
-        <li><a href="/results">Results</a></li>
-        <li><a href="/calculator">Rating Calculator</a></li>
-        {% if user.is_scorekeeper %}
-        <li><a href="/result">Add a Result</a></li>
-        {% endif %}
+        <li><a href="/">Rankings</a></li>
+        <li><a href="/result">Indiviual Results</a></li>
       </ul>
-      <p class="pull-right"><a href="{{ user.signout_url }}">sign out</a> {{ user.nickname }}</p>
     </div>
   </div>
 </div>
@@ -28,6 +30,18 @@
 {% block body %}
 
 {% endblock %}
+</div>
+</body>
+
+<div class="container">
+  <div class="et_pb_section et_pb_section_7 et_pb_with_background et_section_specialty">
+    <div class="logo_container">
+      <span class="logo_helper"></span>
+      <a href="https://www.acquaint.eu/">
+        <img src="https://www.acquaint.eu/wp-content/uploads/2017/11/LogoAcquaint-pipeline-inspection.png" alt="Acquaint" id="logo" data-height-percentage="92" data-actual-width="346" data-actual-height="136">
+      </a>
+    </div>
+  </div>
 </div>
 </body>
 </html>

@@ -1,47 +1,163 @@
 {% extends 'templates/layout.html' %}
 {% block body %}
 
-    <div class="page-header">
-      <h1>Add Match Result</h 1>
-    </div>
-
-    <p>Lodge a result of a match here to adjust the rankings.</p>
-
+  <div class="row">
+    <h1>Results For:</h 1>
     <form>
-
-      <div class="row">
-
-        <div class="span4">
-          <h2>Winner</h2>
-
-          <select name="W">
-            {% for competitor in competitors %}
-              <option value="{{ competitor.userid }}">{{ competitor.nickname }}</option>
-            {% endfor %}
-          </select>
-
-        </div>
-        
-        <div class="span3" style="padding:2em 0;font-weight:bold; font-size:150%;">
-          defeated
-        </div>
-        
-        <div class="span4">
-          <h2>Loser</h2>
-
-          <select name="L">
-            {% for competitor in competitors %}
-              <option value="{{ competitor.userid }}">{{ competitor.nickname }}</option>
-            {% endfor %}
-          </select>
-
-       </div>
-        
-      </div>
-      <div class="form-actions">
-        <input type="hidden" name="result_submit" value="submit"/>
-        <button type="submit" class="btn btn-primary">Save result</button>
-      </div>
+    <select name="userid" onChange="this.form.submit()"> 
+      {% for competitor in competitors %}
+        {% if competitor.userid == user.userid %}
+          <option value="{{ competitor.userid }}" selected="selected">{{ competitor.nickname }}</option>
+        {% else %}
+          <option value="{{ competitor.userid }}">{{ competitor.nickname }}</option>
+        {% endif %}
+      {% endfor %}
+    </select>
+    <noscript><input type="submit" value="Submit"></noscript>
     </form>
+  </div>
+  <div class="row"></div>
+    <div class="column1">
+      <div id="totalscore"></div>
+      <div id="quality"></div>
+      <div id="coverage"></div>
+      <div id="speed"></div>
+    </div>
+    <div class="column2">
+      <canvas id="myChart" width="400" height="400"></canvas>
+    </div>
+  </div>
 
+  <script>
+    
+    document.addEventListener("DOMContentLoaded", function(event) {
+      var totalscore, quality, coverage, speed;
+      var colors = ["#FF0000", "#FF1100", "#FF2300", "#FF3400", "#FF4600", "#FF5700", "#FF6900",
+                    "#FF7B00", "#FF8C00", "#FF9E00", "#FFAF00", "#FFC100", "#FFD300", "#FFE400",
+                    "#FFF600", "#F7FF00", "#E5FF00", "#D4FF00", "#C2FF00", "#B0FF00", "#9FFF00",
+                    "#8DFF00", "#7CFF00", "#6AFF00", "#58FF00", "#47FF00", "#35FF00", "#24FF00",
+                    "#12FF00", "#00FF00"];
+      var ctx = document.getElementById('myChart').getContext('2d');
+
+      var totalscore = new JustGage({
+        id: "totalscore",
+        value: {{ user.totalscore }},
+        min: 0,
+        max: 100,
+        title: "Total Score:",
+        label: "",
+        donut: false,
+        counter: true,
+        startAnimationTime: 2000,
+        startAnimationType: ">",
+        refreshAnimationTime: 2000,
+        refreshAnimationType: "bounce",
+        levelColors: colors,
+      });
+
+      var quality = new JustGage({
+        id: "quality",
+        value: {{ user.quality }},
+        min: 0,
+        max: 100,
+        title: "Quality:",
+        label: "",
+        counter: true,
+        startAnimationTime: 2000,
+        startAnimationType: ">",
+        refreshAnimationTime: 2000,
+        refreshAnimationType: "bounce",
+        levelColors: colors
+      });
+
+      var coverage = new JustGage({
+        id: "coverage",
+        value: {{ user.coverage }},
+        min: 0,
+        max: 100,
+        title: "Coverage:",
+        label: "",
+        counter: true,
+        startAnimationTime: 2000,
+        startAnimationType: ">",
+        refreshAnimationTime: 2000,
+        refreshAnimationType: "bounce",
+        levelColors: colors
+      });
+
+      var speed = new JustGage({
+        id: "speed",
+        value: {{ user.speed }},
+        min: 0,
+        max: 100,
+        title: "Speed:",
+        label: "",
+        counter: true,
+        startAnimationTime: 2000,
+        startAnimationType: "<",
+        refreshAnimationTime: 2000,
+        refreshAnimationType: "bounce",
+        levelColors: colors
+      });
+      var source = {{ data }};
+
+      var plotdata1 = [];
+      for (var j = 0; j < source.length; j++) {
+        var jsonObj = {x: source[j].X1, y: source[j].Y1};
+        plotdata1.push(jsonObj);
+      }
+      var plotdata2 = [];
+      for (var j = 0; j < source.length; j++) {
+        var jsonObj = {x: source[j].X2, y: source[j].Y2};
+        plotdata2.push(jsonObj);
+      }
+
+      var BgColors = [];
+      for (var j = 0; j < source.length; j++) {
+        var x = source[j].Q
+        BgColors.push(x);
+      }
+      
+      Chart.defaults.global.elements.point.radius = 5;
+
+      window.onload=function(){
+        setTimeout(function() {
+          var myChart = new Chart(ctx, {
+          type: 'scatter',
+          data: {
+            datasets: [{
+                label: 'Inner wall',
+                data: plotdata1,
+                pointBackgroundColor: BgColors,
+            },
+            {
+                label: 'Outer wall',
+                data: plotdata2,
+                pointBackgroundColor: BgColors,
+            }]
+          },
+              options: {
+                  scales: {
+                      yAxes: [{
+                          ticks: {
+                            beginAtZero: true,
+                            suggestedMin: -500,
+                            suggestedMax: 500
+                          }
+                      }],
+                      xAxes: [{
+                        ticks: {
+                          suggestedMin: -500,
+                          suggestedMax: 500
+                        }
+                      }]
+                  }
+              }
+          });
+        }, 2100);
+      };
+
+
+    });
+  </script>
 {% endblock %}

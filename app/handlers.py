@@ -5,9 +5,15 @@ import jinja2
 import os
 import logging
 
+
 from app.models import *
 from app.elo_rating import *
 from google.appengine.api import users
+from google.appengine.api import app_identity
+import sys
+sys.path.insert(0, 'lib')
+import cloudstorage as gcs
+
 
 # initialise templating engine
 jinja_environment = jinja2.Environment(
@@ -15,85 +21,40 @@ jinja_environment = jinja2.Environment(
 
 class MainHandler(webapp2.RequestHandler):
   def get(self):
-    user = ActiveUser()
-    if user.loaded:
-      template_values = {
-          "rankings": Competitor.ordered(),
-          "user": user
-          }
-      template = jinja_environment.get_template('templates/index.html')
-      self.response.out.write(template.render(template_values)) 
-
-    else:
-      greeting = ("You are not signed in. <a href=\"%s\">Join the competition</a>." %
-           users.create_login_url("/"))
-      self.response.out.write("<html><body>%s</body></html>" % greeting)
-
-class ResultsHandler(webapp2.RequestHandler):
-  def get(self):
-    user = ActiveUser()
-    if self.request.get("userid"):
-      competitor = Competitor.by_id(self.request.get("userid"))
-      logging.info("get results for %s " % (competitor.nickname))
-      results = Result.all_for(competitor.userid)
-    else:
-      competitor = None
-      results = Result.all_results()
-
     template_values = {
-        'results': results, 
-        'competitor': competitor,
-        'user': user
+        "rankings": Competitor.ordered(), 
         }
-    template = jinja_environment.get_template('templates/results.html')
+    template = jinja_environment.get_template('templates/index.html')
     self.response.out.write(template.render(template_values)) 
+
 
 class AddResultHandler(webapp2.RequestHandler):
   def get(self):
-    user = ActiveUser()
-    if user.is_scorekeeper:
-
-      winner_id = self.request.get("W")
-      loser_id = self.request.get("L")
-      if self.request.get("result_submit") == "submit" and winner_id != loser_id:
-          
-        winner = Competitor.by_id(winner_id)
-        loser = Competitor.by_id(loser_id)
-        Result.process_match_result(winner,loser)
-             
-        self.redirect("/")
-      else:  
-        template_values = {
-            'competitors': Competitor.ordered(),
-            'user': user
-          }
-        template = jinja_environment.get_template('templates/result.html')
-        self.response.out.write(template.render(template_values)) 
-
+    if self.request.get("userid"):
+      competitor = Competitor.by_id(self.request.get("userid"))
+      logging.info("get results for %s " % (competitor.nickname))
     else:
-      self.redirect("/")
+      competitor = Competitor.by_newestdate()
+      logging.info("get results for %s based on date" % (competitor.nickname))
+    if competitor.nickname:
+      data = self.getData(competitor.nickname)
+    else:
+      data = {"X1":{"0":-1.0,"1":-2.0},"X2":{"0":0.0,"1":1.0},"Y1":{"0":2.0,"1":2.0},"Y2":{"0":1.0,"1":1.0}}
 
-
-class CalculatorHandler(webapp2.RequestHandler):
-  def get(self):
-    user = ActiveUser()
-    competitors = Competitor.ordered()
-    target,new_ratings = None,None
-    if self.request.get("target"):
-      target = Competitor.by_id(self.request.get("target"))
-      new_ratings = EloRating.calculate_elo_rank(user.rating, target.rating)
-      user_new_rating = new_ratings[0] # winner
-      target_new_rating = new_ratings[1] # loser
-      
     template_values = {
-        'user': user,
-        'target': target,
-        'new_ratings': new_ratings,
-        'competitors': competitors
-        }
-    template = jinja_environment.get_template('templates/calculator.html')
-    self.response.out.write(template.render(template_values)) 
+      'user': competitor,
+      'competitors': Competitor.ordered(),
+      'data': data,
+    }
+    template = jinja_environment.get_template('templates/result.html')
+    self.response.out.write(template.render(template_values))
 
+  def getData(self,name):
+      # self.response.out.write('Reading the full file contents:\n')
+      gcs_file = gcs.open('/franky-test-bucket/'+name)
+      contents = gcs_file.read()
+      gcs_file.close()
+      return(contents)
 
 class ActiveUser():
   def __init__(self):
@@ -108,9 +69,11 @@ class ActiveUser():
       u = self.find_or_add_user(user)
       self.userid = u.userid
       self.nickname = u.nickname
-      self.rating = u.rating
-      self.is_scorekeeper = u.is_scorekeeper
+      self.totalscore = u.totalscore
       self.include_in_rankings = u.include_in_rankings
+      self.coverage = u.coverage
+      self.quality = u.quality
+      self.speed = u.speed
       self.signout_url = users.create_logout_url("/")
       return True
 
@@ -127,5 +90,14 @@ class ActiveUser():
       else:
         logging.info("recognised competitor " + u.userid)
       return u
+      
+  class StorageHandler(webapp2.RequestHandler):
+    def get(self):
+      bucket_name = os.environ.get('BUCKET_NAME',
+                                  app_identity.get_default_gcs_bucket_name())
 
+      self.response.headers['Content-Type'] = 'text/plain'
+      self.response.write('Demo GCS Application running from Version: '
+                          + os.environ['CURRENT_VERSION_ID'] + '\n')
+      self.response.write('Using bucket name: ' + bucket_name + '\n\n')
 
