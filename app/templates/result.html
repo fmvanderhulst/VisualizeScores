@@ -2,7 +2,7 @@
 {% block body %}
 
   <div class="row">
-    <h1>Results For:</h 1>
+    <h1>Resultaten voor:</h 1>
     <form>
     <select name="userid" onChange="this.form.submit()"> 
       {% for competitor in competitors %}
@@ -44,10 +44,21 @@
         value: {{ user.totalscore }},
         min: 0,
         max: 100,
-        title: "Total Score:",
+        title: "Totale Score:",
         label: "",
         donut: false,
         counter: true,
+        symbol: '%',
+        pointer: true,
+        pointerOptions: {
+          toplength: -15,
+          bottomlength: 10,
+          bottomwidth: 12,
+          color: '#8e8e93',
+          stroke: '#ffffff',
+          stroke_width: 3,
+          stroke_linecap: 'round'
+        },
         startAnimationTime: 2000,
         startAnimationType: ">",
         refreshAnimationTime: 2000,
@@ -60,8 +71,9 @@
         value: {{ user.quality }},
         min: 0,
         max: 100,
-        title: "Quality:",
+        title: "Kwaliteit:",
         label: "",
+        donut: true,
         counter: true,
         startAnimationTime: 2000,
         startAnimationType: ">",
@@ -75,9 +87,10 @@
         value: {{ user.coverage }},
         min: 0,
         max: 100,
-        title: "Coverage:",
+        title: "Dekking:",
         label: "",
         counter: true,
+        donut: true,
         startAnimationTime: 2000,
         startAnimationType: ">",
         refreshAnimationTime: 2000,
@@ -90,9 +103,10 @@
         value: {{ user.speed }},
         min: 0,
         max: 100,
-        title: "Speed:",
+        title: "Snelheid:",
         label: "",
         counter: true,
+        donut: true,
         startAnimationTime: 2000,
         startAnimationType: "<",
         refreshAnimationTime: 2000,

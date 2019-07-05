@@ -24,8 +24,13 @@ class MainHandler(webapp2.RequestHandler):
     template_values = {
         "rankings": Competitor.ordered(), 
         }
-    template = jinja_environment.get_template('templates/index.html')
+    template = jinja_environment.get_template('templates/rankings.html')
     self.response.out.write(template.render(template_values)) 
+
+class StartHandler(webapp2.RequestHandler):
+  def get(self):
+    template = jinja_environment.get_template('templates/index.html')
+    self.response.out.write(template.render()) 
 
 
 class AddResultHandler(webapp2.RequestHandler):
@@ -37,7 +42,10 @@ class AddResultHandler(webapp2.RequestHandler):
       competitor = Competitor.by_newestdate()
       logging.info("get results for %s based on date" % (competitor.nickname))
     if competitor.nickname:
-      data = self.getData(competitor.nickname)
+      try:
+        data = self.getData((competitor.nickname+str(competitor.userid)))
+      except:
+        data = None
     else:
       data = {"X1":{"0":-1.0,"1":-2.0},"X2":{"0":0.0,"1":1.0},"Y1":{"0":2.0,"1":2.0},"Y2":{"0":1.0,"1":1.0}}
 

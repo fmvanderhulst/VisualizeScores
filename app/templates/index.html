@@ -1,35 +1,11 @@
 {% extends 'templates/layout.html' %}
 {% block body %}
 
-    <div class="page-header">
-      <h1>PipeScanner Grand Tournament</h1>
+<div class="container">
+    <div class="logo_container">
+        <a href="/rankings">
+            <img src="/images/PIPESCANNER.png" >
+        </a>
     </div>
-
-      <table class="table ladder">
-        <thead>
-          <tr>
-            <th>Rank</th>
-            <th>Name</th>
-            <th>TotalScore</th>
-            <th>Quality</th>
-            <th>Coverage</th>
-            <th>Speed</th>
-            <th>Go To Results</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for ranking in rankings %}
-            <tr>
-              <td>{{ loop.index }}</td>
-              <td>{{ ranking.nickname }}</td>
-              <td>{{ ranking.totalscore }}</td>
-              <td>{{ ranking.quality }}</td>
-              <td>{{ ranking.coverage }}</td>
-              <td>{{ ranking.speed }}</td>
-              <td><a href="/result?userid={{ ranking.userid }}" class="btn">results</a></td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-
+</div>
 {% endblock %}

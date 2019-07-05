@@ -1,0 +1,35 @@
+{% extends 'templates/layout.html' %}
+{% block body %}
+
+    <div class="page-header">
+      <h2>PipeScanner Competition</h2>
+    </div>
+
+      <table class="table ladder">
+        <thead>
+          <tr>
+            <th>Positie</th>
+            <th>Naam</th>
+            <th>Totale Score</th>
+            <th>Kwaliteit</th>
+            <th>Dekking</th>
+            <th>Snelheid</th>
+            <th>Ga naar resultaten</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for ranking in rankings %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ ranking.nickname }}</td>
+              <td>{{ ranking.totalscore }}</td>
+              <td>{{ ranking.quality }}</td>
+              <td>{{ ranking.coverage }}</td>
+              <td>{{ ranking.speed }}</td>
+              <td><a href="/result?userid={{ ranking.userid }}" class="btn">resultaten</a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+{% endblock %}

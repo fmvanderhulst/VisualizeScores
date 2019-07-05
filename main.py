@@ -20,6 +20,7 @@ from app.handlers import *
 ##############  
 
 app = webapp2.WSGIApplication([
-    ('/', MainHandler),
+    ('/', StartHandler),
+    ('/rankings', MainHandler),
     ('/result', AddResultHandler),
 ], debug=True)
